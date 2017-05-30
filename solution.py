@@ -40,6 +40,15 @@ def naked_twins(values):
 
     # Find all instances of naked twins
     # Eliminate the naked twins as possibilities for their peers
+    naked_twins = [[box1, box2] for box1 in boxes for box2 in peers[box1] if len(values[box1]) == 2 and len(values[box2]) == 2 and list(values[box1]) == list(values[box2]) ]
+    for naked_twin in naked_twins:
+        box1 = naked_twin[0]
+        box2 = naked_twin[1]
+        naked_peers = peers[box1] & peers[box2]
+        for peer in naked_peers:
+            for val in values[box1]:
+                values[peer] = values[peer].replace(val,'')
+    return values
 
 
 
@@ -109,6 +118,8 @@ def reduce_puzzle(values):
         # Your code here: Use the Only Choice Strategy
         values = only_choice(values)
 
+        values = naked_twins(values)
+
         # Check how many boxes have a determined value, to compare
         solved_values_after = len([box for box in values.keys() if len(values[box]) == 1])
         # If no new values were added, stop the loop.
@@ -151,7 +162,8 @@ def solve(grid):
 
 
 if __name__ == '__main__':
-    diag_sudoku_grid = '2.............62....1....7...6..8...3...9...7...6..4...4....8....52.............3'
+    # diag_sudoku_grid = '2.............62....1....7...6..8...3...9...7...6..4...4....8....52.............3'
+    diag_sudoku_grid = '9.1....8.8.5.7..4.2.4....6...7......5..............83.3..6......9................'
     display(solve(diag_sudoku_grid))
 
     try:
